@@ -5,23 +5,27 @@ import System.IO.Unsafe
 -- Remember to use double backslashes for windows paths
 
 data_path :: String
-data_path = "\\mnt\\c\\Users\\brand\\Documents\\haskell\\assignment21\\data.csv"
+data_path = "//mnt//c//Users//brand//Documents//haskell//assignment21//data.csv"
 
 sales_path :: String 
-sales_path = "\\mnt\\c\\Users\\brand\\Documents\\haskell\\assignment21\\sales.txt"
+sales_path = "//mnt//c//Users//brand//Documents//haskell//assignment21//sales.txt"
 
 ---- Part A
 
 convert_single :: [Float] -> Float -> [Float]
-convert_single series exchange = error "Not implemented"
+convert_single series exchange = map (*exchange) series
+-- The above is self explanatory.
 
 
 convert_all :: [[Float]] -> Float -> [[Float]]
-convert_all series exchange = error "Not implemented"
+-- what we want to do is map over every element in the list and map over the elements inside that list
+-- and convert each element into a different currency
+convert_all series exchange = map (map (*exchange ) ) series
 
 
-days_above :: [Float] -> Float -> Int
-days_above series amount = error "Not implemented"
+
+--days_above :: [Float] -> Float -> Int
+--days_above series amount = error "Not implemented"
 
 
 days_between :: [Float] -> Float -> Float -> Int
