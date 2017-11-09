@@ -5,10 +5,10 @@ import System.IO.Unsafe
 -- Remember to use double backslashes for windows paths
 
 data_path :: String
-data_path = "M:\\data.csv"
+data_path = "\\mnt\\c\\Users\\brand\\Documents\\haskell\\assignment21\\data.csv"
 
 sales_path :: String 
-sales_path = "M:\\sales.txt"
+sales_path = "\\mnt\\c\\Users\\brand\\Documents\\haskell\\assignment21\\sales.txt"
 
 ---- Part A
 

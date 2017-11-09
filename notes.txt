@@ -1,0 +1,45 @@
+get_series is essential for parts 1 and 2
+take 10 (get_series 0)
+gives you the first 10 days of financial data from asset #0
+
+short_data gets you the first 10 days of all financial data combinded
+
+you have to change the strings so that they point to the right place in the terminal
+
+part a - map and filter
+
+part b - fold scanl
+
+part c- use whatever you want, but try to use a fold and scan as it might be easier
+
+john walks us through this quite slowly
+
+Question 1.
+
+To convert a price from one currency to another, we multiply the price by an exchange
+
+rate.  So if the price is
+
+2.0
+
+in currency A, and the exchange rate between currency A and currency B is
+1.31, then the price in currency B is
+
+2.0 * 1.31 = 2.62
+
+
+Write a function
+
+convert_single :: [Float] -> Float -> [Float]
+
+that converts a price series
+
+into another currency.  The first argument is a price series,  and the second argument is the exchange
+
+rate.  For example:
+
+ghci> convert_single (get_short_series 0) 2.0
+
+[76.72,76.8,75.6,73.68,75.04,77.28,72.96,73.44,75.28,75.04]
+
+Your implementation should use the map function.
