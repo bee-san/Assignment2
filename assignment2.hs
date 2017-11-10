@@ -23,13 +23,16 @@ convert_all :: [[Float]] -> Float -> [[Float]]
 convert_all series exchange = map (map (*exchange ) ) series
 
 
+-- what we want to do is to go over every single element in the list and if that
+-- element is > amount then return that element in a list
 
---days_above :: [Float] -> Float -> Int
---days_above series amount = error "Not implemented"
+-- haskell says filter returns an integer and not a list of floats... why?
+days_above :: [Float] -> Float -> Int
+days_above series amount = length(filter (>amount) series)
 
 
 days_between :: [Float] -> Float -> Float -> Int
-days_between series lower upper = error "Not implemented"
+days_between series lower upper = length(filter (\x -> x > lower && x < upper) series)
 
 ----- Part B
 
