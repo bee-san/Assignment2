@@ -15,22 +15,21 @@ sales_path = "//mnt//c//Users//brand//Documents//haskell//assignment21//sales.tx
 convert_single :: [Float] -> Float -> [Float]
 convert_single series exchange = map (*exchange) series
 -- The above is self explanatory.
-
+-- above code is tested against series 0, 1 and 2 as well as exchange = -1, 0, "a" and 1. Tests were successful.
 
 convert_all :: [[Float]] -> Float -> [[Float]]
 -- what we want to do is map over every element in the list and map over the elements inside that list
 -- and convert each element into a different currency
 convert_all series exchange = map (map (*exchange ) ) series
-
+-- above code is tested to work against exchange being -1, 0, "a" and 1. tests sucessful.
 
 -- what we want to do is to go over every single element in the list and if that
 -- element is > amount then return that element in a list
-
--- haskell says filter returns an integer and not a list of floats... why?
-days_above :: [Float] -> Float -> Int
+days_above :: [Float] -> Float -> Integert
 days_above series amount = length(filter (>amount) series)
+-- TODO: John said the above days_above code doesn't work, check it over?
 
-
+-- This is basically the same as above but using an aonymous function
 days_between :: [Float] -> Float -> Float -> Int
 days_between series lower upper = length(filter (\x -> x > lower && x < upper) series)
 
@@ -38,7 +37,7 @@ days_between series lower upper = length(filter (\x -> x > lower && x < upper) s
 
 modify_position :: Float -> Float -> Float -> Float -> Float
 modify_position buy_price sell_price position price = 
-    error "Not implemented"
+    
 
 final_position :: Float -> Float -> [Float] -> Float
 final_position buy_price sell_price series = 
@@ -110,3 +109,7 @@ short_data = take 10 get_data
 get_short_series :: Int -> [Float]
 get_short_series n = take 10 (get_series n)
 
+
+-- I wanted a ever-so slightly shorter version of this function,sorry!!
+get_short_series :: Int -> [Float]
+get_shorter_series n = take 3 (get_series n)
