@@ -25,7 +25,7 @@ convert_all series exchange = map (map (*exchange ) ) series
 
 -- what we want to do is to go over every single element in the list and if that
 -- element is > amount then return that element in a list
-days_above :: [Float] -> Float -> Integert
+days_above :: [Float] -> Float -> Int
 days_above series amount = length(filter (>amount) series)
 -- TODO: John said the above days_above code doesn't work, check it over?
 
@@ -36,8 +36,13 @@ days_between series lower upper = length(filter (\x -> x > lower && x < upper) s
 ----- Part B
 
 modify_position :: Float -> Float -> Float -> Float -> Float
-modify_position buy_price sell_price position price = 
-    
+modify_position buy_price sell_price position price =
+    if position == 0 then position
+    else if price < buy_price then position + 1
+    else if price > sell_price then position - 1
+    else 1.0
+
+
 
 final_position :: Float -> Float -> [Float] -> Float
 final_position buy_price sell_price series = 
@@ -107,9 +112,5 @@ short_data :: [[Float]]
 short_data = take 10 get_data
 
 get_short_series :: Int -> [Float]
-get_short_series n = take 10 (get_series n)
+get_short_series n = take 3 (get_series n)
 
-
--- I wanted a ever-so slightly shorter version of this function,sorry!!
-get_short_series :: Int -> [Float]
-get_shorter_series n = take 3 (get_series n)
