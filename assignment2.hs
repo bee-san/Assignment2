@@ -37,26 +37,26 @@ days_between series lower upper = length(filter (\x -> x > lower && x < upper) s
 
 modify_position :: Float -> Float -> Float -> Float -> Float
 modify_position buy_price sell_price position price =
-    if position == 0 then position
-    else if price < buy_price then position + 1
-    else if price > sell_price then position - 1
-    else 1.0
+    if price < buy_price then position + 1
+    else if position /= 0 && price > sell_price then position - 1
+    else position
 
-
-
-final_position :: Float -> Float -> [Float] -> Float
-final_position buy_price sell_price series = 
-    error "Not implemented"
+-- we want to use foldl to turn the list reutrn by modify position into a single final postitio
+-- we want to increase the modify position position to increaes by 1 everytime, is this what accumulator is for?
+-- the x is the current element in the list, maybe use this for price?
+--test = (\ acc x -> modify_position 37 38 acc x)
+--final_position :: Float -> Float -> [Float] -> Float
+final_position buy_price sell_price series = foldl (\ acc x -> modify_position 37 38 acc x) 0 series
 
 
 daily_position :: Float -> Float -> [Float] -> [Float]
-daily_position buy_price sell_price series =
-    error "Not implemented"
+daily_position buy_price sell_price series = scanl  (\ acc x -> modify_position buy_price sell_price acc x) 0 series
 
 
+-- we want to map through every element of daily_position and map through every element in series
+-- and times element X in series by element X in daily_position
 daily_holding_values :: Float -> Float -> [Float] -> [Float]
-daily_holding_values buy_price sell_price series =
-    error "Not implemented"
+daily_holding_values buy_price sell_price series = zipWith (\ x y -> x * y) series (daily_position buy_price sell_price series) 
 
 
 ---- Part C
@@ -112,5 +112,5 @@ short_data :: [[Float]]
 short_data = take 10 get_data
 
 get_short_series :: Int -> [Float]
-get_short_series n = take 3 (get_series n)
+get_short_series n = take 10 (get_series n)
 
