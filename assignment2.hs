@@ -93,14 +93,11 @@ tuple_to_data = map (\ x -> element_to_tuple x) (sales_data_get)
 -- we want to send that to a function that executes the sale and then returns back the number for it
 
 -- TODO: map this
-calculate_sales list = if list !! 0 == "BUY" then buy_sale else if list !! 0 == "SELL" then sell_sale else error"NIGGA"
+calculate_sales (x, y, z, b)  = if x == True then buy_sale else if x  == False  then sell_sale else error"NIGGA"
 
-
-
+fucking_haskell_please_fucking_work_test_func = map (\ x -> calculate_sales x) (tuple_to_data) 
 -- Map every element of [[a]] and then map the elements inside of it and check if its
 -- the correct thing
---what_goes_where = map map((calculate_sales) (tuple_to_data)) tuple_to_data
-
 
 --TODO: this might be 9 and not 10
 make_fake_list = take 10 (repeat 0)
@@ -109,7 +106,10 @@ make_fake_list = take 10 (repeat 0)
 
 --modify_sale_buy 
 
-buy_sale = [1]
+buy_sale (x, y, z, b) 10 = 10
+buy_sale (x, y, z, b) length 
+
+		
 sell_sale = [0]
 
 
