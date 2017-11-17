@@ -93,9 +93,10 @@ tuple_to_data = map (\ x -> element_to_tuple x) (sales_data_get)
 -- we want to send that to a function that executes the sale and then returns back the number for it
 
 -- TODO: map this
-calculate_sales (x, y, z, b)  = if x == True then buy_sale else if x  == False  then sell_sale else error"NIGGA"
+calculate_sales (x, y, z, b) = if x == True then [1] else if x  == False  then [0] 10 else error"ERROR 1"
 
-fucking_haskell_please_fucking_work_test_func = map (\ x -> calculate_sales x) (tuple_to_data) 
+-- 
+buy_or_sell list = map (\ x -> calculate_sales x)
 -- Map every element of [[a]] and then map the elements inside of it and check if its
 -- the correct thing
 
@@ -104,13 +105,14 @@ make_fake_list = take 10 (repeat 0)
 
 --modify_sale_buy sales_list empty_list= ()
 
---modify_sale_buy 
-
-buy_sale (x, y, z, b) 10 = 10
-buy_sale (x, y, z, b) length 
+buy_or_sell tuple_to_data = 
 
 		
-sell_sale = [0]
+--sell_sale = [0]
+
+--modify_pos_neg units buy_or_sell 
+
+--replicate (series - 1) 0.0 ) ++ [modified_units units buy_or_sell] ++ (replicate (10 - series) 0.0
 
 
 -- begin_sale (tuple_to_data) = map (\x -> map(\c -> if c == True then buy_sale x else sell_sale x)) tuple_to_data
