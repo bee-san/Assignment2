@@ -45,7 +45,7 @@ modify_position buy_price sell_price position price =
 -- we want to increase the modify position position to increaes by 1 everytime, is this what accumulator is for?
 -- the x is the current element in the list, maybe use this for price?
 --test = (\ acc x -> modify_position 37 38 acc x)
---final_position :: Float -> Float -> [Float] -> Float
+final_position :: Float -> Float -> [Float] -> Float
 final_position buy_price sell_price series = foldl (\ acc x -> modify_position buy_price sell_price acc x) 0 series
 
 -- Literally the same as above but with slight modifcations
@@ -73,15 +73,13 @@ daily_holding_values buy_price sell_price series = zipWith (\ x y -> x * y) seri
 -- do I want to create a new list using the new data type, or do I want to be able to call a function
 -- to convert each string into useful data then use that?
 
--- This is self explanatory
---data Sale :: Bool Float Int Int
 
 -- ACTION UNITS SERIES DAY
 
 -- helper function, self explanatory
 sales_data_get = map (words) (get_sales)
 
-
+ 
 -- TUPLIFY --  NOT A HARRY POTTER SPELL -- Helper function. TODO: make your own data type?
 element_to_tuple :: [[Char]] -> (Bool, Float, Int, Int)
 element_to_tuple list = ((if list !! 0 == "BUY" then True else False), (read (list !! 1) :: Float), read (list !! 2) :: Int, read (list !! 3) :: Int )
@@ -89,40 +87,127 @@ element_to_tuple list = ((if list !! 0 == "BUY" then True else False), (read (li
 -- Function that uses helper functions
 tuple_to_data = map (\ x -> element_to_tuple x) (sales_data_get)
 
+
+
+-- acculmator is both the number of units and a motherfucking list
+-- we need to make sure the current element in the list is equal to 
+
+-- if Buy is true then add accumulator + units
+-- if sell is true then add accumulator + units * -1
+-- otherwise just add accumulator to list
+
+-- edits a list in a tuple
+edit_lst_tple (x, y, z) element_to_add = (x, y ++ [element_to_add], z)
+edit_tple_pp1 (x, y, z) acc = ((x +1), y, z)
+-- pp1 stands for ++1
+
+-- Quickly checks to see if the current position of the list is the same as the series
+qik_chk series x = if series == x  then True else False
+
+-- Is it a buy or sell element?
+by_r_sel x = if x !! 0 then True else False 
+
+test = foldl (\ positions sale -> update_position positions sale) (replicate 10 0) tuple_to_data
+
+update_position positions sale = change_list 
+
+change_list list pos new = 
+    let
+        before = take pos list
+        after = drop (pos+1) list
+    in
+        before ++ [new] ++ after
+
+-- series is the current position of the list and is thus an acculmator
+
+
+
+
+
+----------------------------------------------------------------------------------------------------
+---------------------------------Graveyard of attempted code ---------------------------------------
+----------------------------------------------------------------------------------------------------
+
+
+-- for the foldl implementation what we want to do is to to map an anonymous function onto the tuple_to_data list
+-- and then use an if statement so if the current day in the sale is the same position in a list then
+    -- if it is a sell transaction then times it by *-1 so it becomes negative
+    -- then place this value into the accumulator 
+    -- because of how the map works, if there are 2 day 4's or even 6 day 4's it will iterate over all of them at once so the accumulator will
+        -- always have the current value for the day
+    -- if the day changes, like it goes onto the next bit of map then write the accumulator value into the list
+    -- this may be a function inside a function?
+    -- then once the list is complete, you are done!!
+    
+-- Let's build tis a step at a time
+-- test = map (\x -> ) tuple_to_data
+-- okay so in the above code, x is always the current element in the list of TUPLES!!!
+--test = map (\x -> foldl(x c a -> if x !! 4 == )) tuple_to_data
+-- you're going to hate me john but this is the only way i can do it (i've been stuck on this for 2 weeks)
+-- okay so we want to map an anonymous function onto tuple_to_data
+-- the anonymous function will use foldl to return a single item, an accumulator which contaisn the current price (like if its 100 - 50 etc)
+-- test = map (\x -> (foldl (\y acc -> if x !! 4 )))
+
+--    make_fake_list = take 10 (repeat 0)
+
+-- where list is empty list of 10 and slaes is list of sales
+--begin_sale list sales = map (\x -> map(\c acc -> if x !! 4 == ) 0.0 sales) list
+
+-- okay new plan
+-- we map over every item in the 10 element empty list
+-- we then use fold to count where in the list we are (using the accumulator)
+-- in this folded funtion we then map every elemtn in the sales list
+-- we then use fold and the accumulator to work out how much there is
+-- so if DAY == original accumulator in empty list
+-- then if sell add to accumulator UNITS*-1
+-- else add to acculator +UNITS
+-- when map is finished, add acculmator to a new list like
+-- accumulator ++ the function we just gone did
+-- recursion shouldn't be too hard as we can just make sure it goes until the list of 10 elements is achieved
+-- we also need to drop the current elements from the list before we recurse
+-- so if we just did day 1 then we need to call a drop_elements functin that returns the list minus every item in the list with day == 1
+
+-- psuedocode for drop_elements
+-- given the sales data and the current day
+-- we will make a new list minus the sales data
+
+-- drop_elements [] day = []
+--drop_elements([x:xs], ys) day = map (\c -> if c !! 4 == day then drop_elements ys else drop_elements ([x:xs], ys))
+
+
+-- sales_final_position :: [String] -> [Float]
+-- sales_final_position sales = zipWith (\ x y -> x + y) (buy_sale) (sell_sale)
+
 -- we want to go through the list, 1 element at a time and access each element. given a list of a sale
 -- we want to send that to a function that executes the sale and then returns back the number for it
 
--- TODO: map this
-calculate_sales (x, y, z, b) = if x == True then [1] else if x  == False  then [0] 10 else error"ERROR 1"
+-- calculate_sales (x, y, z, b) = if x == True then [1] else if x  == False  then [0] 10 else error"ERROR 1"
 
--- 
-buy_or_sell list = map (\ x -> calculate_sales x)
+-- calculate_buys [] length = []
+-- calculate_buys list length = map (\ x -> if x !! 0 == True then x : calculate_buys list (length - 1) else calculate_buys list (length - 1)) list
+
+-- buy_or_sell list = map (\ x -> calculate_sales x)
 -- Map every element of [[a]] and then map the elements inside of it and check if its
 -- the correct thing
 
---TODO: this might be 9 and not 10
-make_fake_list = take 10 (repeat 0)
-
---modify_sale_buy sales_list empty_list= ()
-
-buy_or_sell tuple_to_data = 
-
-		
---sell_sale = [0]
-
---modify_pos_neg units buy_or_sell 
-
---replicate (series - 1) 0.0 ) ++ [modified_units units buy_or_sell] ++ (replicate (10 - series) 0.0
-
-
--- begin_sale (tuple_to_data) = map (\x -> map(\c -> if c == True then buy_sale x else sell_sale x)) tuple_to_data
-
 --get_n_element_of_list n = tuple_to_data !! n
 
+-- EXTRA GRAVEYARD OF NON-WORKING FOLDLS
 
 
-sales_final_position :: [String] -> [Float]
-sales_final_position sales = zipWith (\ x y -> x + y) (buy_sale) (sell_sale)
+-- test = foldl (\acc x -> if qik_chk series x then if by_r_sel x then acc + (x !! 2) else acc + (x !! 2 * (-1)) else edit_lst_tple ((edit_tple_pp1), list, acc)) (0, [], 0)
+-- test list = foldl (\acc x -> if qik_chk (x !! 0) x then x + 1 else x + 2) 0 list 
+--test list = foldl (\acc x -> if qik_chk (1) (x) then (x!!0)+1 else (x!!0)+2) (0, 0) list
+--test list = foldl (\acc x -> if qik_chk (counter x) 0 list
+
+-- test list = foldl (\acc x -> if acc !! 0 == 1 then 1 else 0) (0, 1) list
+
+--test = foldl (\ acc x -> if series == x !! 3 then if x !! 0 then acc _ x !! 2 else acc + (x !! 2 * (-1)) else list ++ acc) (0.0, [])
+-- test = foldl (\ acc x -> folded_function acc (x !!) x) (0.0, []) tuple_to_data
+
+
+
+
 
 
 sales_holding_value :: [String] -> [[Float]] -> [Float]
