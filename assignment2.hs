@@ -79,7 +79,6 @@ daily_holding_values buy_price sell_price series = zipWith (\ x y -> x * y) seri
 -- helper function, self explanatory
 sales_data_get = map (words) (get_sales)
 
- 
 -- TUPLIFY --  NOT A HARRY POTTER SPELL -- Helper function. TODO: make your own data type?
 element_to_tuple :: [[Char]] -> (Bool, Float, Int, Int)
 element_to_tuple list = ((if list !! 0 == "BUY" then True else False), (read (list !! 1) :: Float), read (list !! 2) :: Int, read (list !! 3) :: Int )
@@ -87,6 +86,33 @@ element_to_tuple list = ((if list !! 0 == "BUY" then True else False), (read (li
 -- Function that uses helper functions
 tuple_to_data = map (\ x -> element_to_tuple x) (sales_data_get)
 
+-- Quickly checks to see if the current position of the list is the same as the series
+-- qik_chk series x = if series == x  then True else False
+
+-- if it is buy then return units, if it is sell return units * -1
+buy_or_sell (isBuy, quantity, _, _) = if isBuy == True then (quantity) else (quantity) * (-1)
+
+modify_list list pos new =
+    let
+        before = take  pos list
+        after  = drop (pos+1) list
+    in
+        before ++ [new] ++ after
+
+-- modifies the list to contain the right data and then outputs the positions list
+change_list (isBuy, quantity, series, day) positions =
+    let
+        units = buy_or_sell (isBuy, quantity, series, day)
+        cur_pos = positions !! series
+    in
+        modify_list positions series (cur_pos + units)
+
+sales_final_position :: [String] -> [Float]
+sales_final_position sales = foldl (\acc x -> change_list x acc) (replicate 10 0) tuple_to_data
+
+----------------------------------------------------------------------------------------------------
+---------------------------------Graveyard of attempted code ---------------------------------------
+----------------------------------------------------------------------------------------------------
 
 
 -- acculmator is both the number of units and a motherfucking list
@@ -97,36 +123,9 @@ tuple_to_data = map (\ x -> element_to_tuple x) (sales_data_get)
 -- otherwise just add accumulator to list
 
 -- edits a list in a tuple
-edit_lst_tple (x, y, z) element_to_add = (x, y ++ [element_to_add], z)
-edit_tple_pp1 (x, y, z) acc = ((x +1), y, z)
+--edit_lst_tple (x, y, z) element_to_add = (x, y ++ [element_to_add], z)
+--edit_tple_pp1 (x, y, z) acc = ((x +1), y, z)
 -- pp1 stands for ++1
-
--- Quickly checks to see if the current position of the list is the same as the series
-qik_chk series x = if series == x  then True else False
-
--- Is it a buy or sell element?
-by_r_sel x = if x !! 0 then True else False 
-
-test = foldl (\ positions sale -> update_position positions sale) (replicate 10 0) tuple_to_data
-
-update_position positions sale = change_list 
-
-change_list list pos new = 
-    let
-        before = take pos list
-        after = drop (pos+1) list
-    in
-        before ++ [new] ++ after
-
--- series is the current position of the list and is thus an acculmator
-
-
-
-
-
-----------------------------------------------------------------------------------------------------
----------------------------------Graveyard of attempted code ---------------------------------------
-----------------------------------------------------------------------------------------------------
 
 
 -- for the foldl implementation what we want to do is to to map an anonymous function onto the tuple_to_data list
