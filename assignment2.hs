@@ -84,36 +84,77 @@ element_to_tuple :: [[Char]] -> (Bool, Float, Int, Int)
 element_to_tuple list = ((if list !! 0 == "BUY" then True else False), (read (list !! 1) :: Float), read (list !! 2) :: Int, read (list !! 3) :: Int )
 
 -- Function that uses helper functions
+tuple_to_data :: [(Bool, Float, Int, Int)]
 tuple_to_data = map (\ x -> element_to_tuple x) (sales_data_get)
 
 -- Quickly checks to see if the current position of the list is the same as the series
 -- qik_chk series x = if series == x  then True else False
 
 -- if it is buy then return units, if it is sell return units * -1
+buy_or_sell :: Num t => (Bool, t, t1, t2) -> t
 buy_or_sell (isBuy, quantity, _, _) = if isBuy == True then (quantity) else (quantity) * (-1)
 
+modify_list :: [a] -> Int -> a -> [a]
 modify_list list pos new =
     let
         before = take  pos list
         after  = drop (pos+1) list
     in
-        before ++ [new] ++ after
+        if pos >= 0 then before ++ [new] ++ after else list
+        -- this is basic error protection. Negative positions do not exist in lists.
 
+        
 -- modifies the list to contain the right data and then outputs the positions list
+change_list :: (Num a, Ord a) => (Bool, a, Int, t) -> [a] -> [a]
 change_list (isBuy, quantity, series, day) positions =
     let
         units = buy_or_sell (isBuy, quantity, series, day)
         cur_pos = positions !! series
     in
-        modify_list positions series (cur_pos + units)
+        if (cur_pos + units) < 0
+        then
+             error"It is impossible to sell more than you have."
+        else
+            modify_list positions series (cur_pos + units)
 
 sales_final_position :: [String] -> [Float]
 sales_final_position sales = foldl (\acc x -> change_list x acc) (replicate 10 0) tuple_to_data
 
+-- do the scanl version of this then map every element in the scanl version to an anonymous function
+-- that multiplies by it's price
+-- calculate scanl in a seperate function and do the map in the actual graded function
+
+-- PS: I'm doing this on a train, I have about an hour to complete this
+-- So the code will be sub-par but at least it's something, right?
+
+-- literally the scanl version of the above. 
+-- to_map sales = scanl (\acc x -> change_list x acc) (replicate 10 0) tuple_to_data
+
+-- Below deals with "what if there are no trades?"
+-- NOT A VARIABLE, PROMISE
+-- no_sales = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+
+-- I know what you're thinking, this function won't end
+-- as there isn't a base case for "sales" :(
+-- no_trades [] = []
+-- no_trades [x:xs)= map (\x -> if x == no_sales then no_trades xs else no_trades [x:xs]) to_map(sales)
+
+-- No_trades should be a list containing the transactionss without no sales
+-- sales_hlding_value price = map (\x -> x * get_price) no_trades
+
+-- evidently getting the price is hard as you've given it as a tip, so this is a placeholder
+-- get_price list = [0]
+
+-- and this was it, the "I have 1 hour until I'm in an interview so I might as well try to bash out as much of Q10 as I can"
+
+sales_holding_value :: [String] -> [[Float]] -> [Float]
+sales_holding_value sales series =
+    error "Not implemented"
 ----------------------------------------------------------------------------------------------------
 ---------------------------------Graveyard of attempted code ---------------------------------------
 ----------------------------------------------------------------------------------------------------
 
+-- Q10 hopefully isn't here, John. You don't have to suffer and read this.
 
 -- acculmator is both the number of units and a motherfucking list
 -- we need to make sure the current element in the list is equal to 
@@ -203,15 +244,6 @@ sales_final_position sales = foldl (\acc x -> change_list x acc) (replicate 10 0
 
 --test = foldl (\ acc x -> if series == x !! 3 then if x !! 0 then acc _ x !! 2 else acc + (x !! 2 * (-1)) else list ++ acc) (0.0, [])
 -- test = foldl (\ acc x -> folded_function acc (x !!) x) (0.0, []) tuple_to_data
-
-
-
-
-
-
-sales_holding_value :: [String] -> [[Float]] -> [Float]
-sales_holding_value sales series =
-    error "Not implemented"
 
 
 ---- Code for loading the data -- do not modify!
