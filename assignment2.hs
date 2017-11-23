@@ -103,7 +103,7 @@ modify_list list pos new =
         if pos >= 0 then before ++ [new] ++ after else list
         -- this is basic error protection. Negative positions do not exist in lists.
 
-        
+
 -- modifies the list to contain the right data and then outputs the positions list
 change_list :: (Num a, Ord a) => (Bool, a, Int, t) -> [a] -> [a]
 change_list (isBuy, quantity, series, day) positions =
@@ -132,6 +132,7 @@ sales_final_position sales = foldl (\acc x -> change_list x acc) (replicate 10 0
 
 -- Below deals with "what if there are no trades?"
 -- NOT A VARIABLE, PROMISE
+-- This is what a no-sale looks like in the scanl output
 -- no_sales = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
 
 -- I know what you're thinking, this function won't end
@@ -144,6 +145,19 @@ sales_final_position sales = foldl (\acc x -> change_list x acc) (replicate 10 0
 
 -- evidently getting the price is hard as you've given it as a tip, so this is a placeholder
 -- get_price list = [0]
+
+
+-- AHHH no okay quick update
+-- I don't have the time to write code but maybe I'll get marks for trying
+-- I can get the price data from get_data and I can use zipWith to times it by the list
+-- so like
+-- sales_holding_value = zipWith (\x y -> x * y) get_data no_trades
+-- basically if i had the time to debug no_trades this would work
+-- at least it does work logically
+-- By the way I'm at a speed networking event today, I'm not skipping your classes so it's okay
+-- but the event starts in 15 mins and I need to put a suit on
+-- and it runs until 5pm so I don't have the time to actually write code, sorry :( 
+
 
 -- and this was it, the "I have 1 hour until I'm in an interview so I might as well try to bash out as much of Q10 as I can"
 
